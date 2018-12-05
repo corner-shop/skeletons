@@ -1,0 +1,7 @@
+pylint
+ipython
+bpython
+watchdog
+ropevim
+tmuxp
+rope
