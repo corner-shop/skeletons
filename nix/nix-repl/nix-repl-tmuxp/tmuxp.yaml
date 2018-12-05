@@ -1,0 +1,51 @@
+# tmuxp load tmuxp.yaml
+# tmux kill-session -t nix-project
+
+session_name: nix-project
+start_directory: ./
+
+windows:
+- window_name: editor
+  layout: main-horizontal
+  options:
+    automatic-rename: 'off'
+    main-pane-height: 45
+  panes:
+  - shell_command:
+    - bash -l
+    - ctags -R .
+    - vim .
+    focus: true
+    # using an array as nix-repl commands don't like extra spaces at the start
+  - shell_command:
+    - bash -l
+    - nix repl
+    - :l <nixpkgs>
+    suppress_history: false
+
+- window_name: nixpkgs
+  layout: main-horizontal
+  options:
+    automatic-rename: 'off'
+    main-pane-height: 45
+  panes:
+  - shell_command:
+    - bash -l
+    - cd ~/tmp/nixpkgs
+    - ctags -R .
+    - vim .
+    focus: true
+  - shell_command:
+    - bash -l
+
+
+- window_name: bash
+  layout: main-horizontal
+  panes:
+  - shell_command:
+    - bash -l
+  - shell_command:
+    - bash -l
+    - tmux select-window -t 0
+    - tmux select-pane -t 0
+    - reset

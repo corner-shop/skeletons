@@ -1,0 +1,33 @@
+with import <nixpkgs> {};
+with pkgs.python35Packages;
+
+buildPythonPackage { 
+  name = "impurePythonEnv";
+  buildInputs = [
+    taglib
+    openssl
+    git
+    libxml2
+    libxslt
+    libzip
+    python35Full
+    python35Packages.virtualenv
+    python35Packages.pip
+    stdenv
+    libffi
+    zlib ];
+  src = null;
+  # When used as `nix-shell --pure`
+  shellHook = ''
+  unset http_proxy
+  export GIT_SSL_CAINFO=/etc/ssl/certs/ca-bundle.crt
+  virtualenv --no-wheel --no-setuptools venv 
+  source venv/bin/activate
+  wget -c https://bootstrap.pypa.io/get-pip.py
+  venv/bin/python get-pip.py
+  pip install jedi
+  pip install ipython==5.2.0
+  pip install pylint
+  pip install flake8
+  '';
+}

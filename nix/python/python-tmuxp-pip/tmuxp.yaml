@@ -1,0 +1,47 @@
+# tmuxp load tmuxp.yaml
+# tmux kill-session -t python-project
+
+session_name: python-project
+start_directory: ./
+
+windows:
+- window_name: editor
+  layout: main-horizontal
+  options:
+    automatic-rename: 'off'
+    main-pane-height: 45
+  panes:
+  - shell_command:
+    - bash -l
+    - source venv/bin/activate
+    - ctags -R .
+    - vim .
+    focus: true
+  - shell_command:
+    - bash -l
+    - source venv/bin/activate
+    - bpython
+
+
+- window_name: tests
+  layout: even-vertical
+  options:
+    automatic-rename: 'off'
+  panes:
+  - shell_command:
+    - bash -l
+    - source venv/bin/activate
+    - watchmedo shell-command  --patterns="*.py"  --recursive  --command='pylint *.py' --wait --drop
+
+- window_name: bash
+  layout: main-horizontal
+  panes:
+  - shell_command:
+    - bash -l
+    - source venv/bin/activate
+  - shell_command:
+    - bash -l
+    - source venv/bin/activate
+    - tmux select-window -t 0
+    - tmux select-pane -t 0
+    - reset
